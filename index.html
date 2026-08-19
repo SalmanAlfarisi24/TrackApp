@@ -60,7 +60,7 @@
             <button id="tab-tugas" onclick="switchTab('tugas')" class="flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors bg-indigo-100 text-indigo-700 shadow-sm border border-indigo-200">
                 Tugas Kuliah
             </button>
-            <button id="tab-lomba" onclick="switchTab('lomba')" class="flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors text-gray-500 hover:bg-gray-100">
+            <button id="tab-lomba" onclick="switchTab('lomba')" class="flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors text-gray-500 hover:bg-gray-100 border border-transparent">
                 Lomba
             </button>
         </div>
@@ -185,19 +185,15 @@
             currentTab = tab;
             
             if (tab === 'tugas') {
-                // UI Tab
                 tabTugasBtn.className = "flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors bg-indigo-100 text-indigo-700 shadow-sm border border-indigo-200";
                 tabLombaBtn.className = "flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors text-gray-500 hover:bg-gray-100 border border-transparent";
                 
-                // Views
                 viewTugas.classList.remove('hidden');
                 viewLomba.classList.add('hidden');
             } else {
-                // UI Tab
                 tabLombaBtn.className = "flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors bg-green-100 text-green-700 shadow-sm border border-green-200";
                 tabTugasBtn.className = "flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors text-gray-500 hover:bg-gray-100 border border-transparent";
                 
-                // Views
                 viewLomba.classList.remove('hidden');
                 viewTugas.classList.add('hidden');
             }
@@ -216,7 +212,6 @@
             } else {
                 emptyState.classList.add('hidden');
                 
-                // Sort by date (ascending for tugas/deadline, descending for lomba/history)
                 const sortedData = [...dataArr].sort((a, b) => {
                     return currentTab === 'tugas' 
                         ? new Date(a.waktu) - new Date(b.waktu) 
@@ -226,7 +221,6 @@
                 sortedData.forEach(item => {
                     const isTugas = currentTab === 'tugas';
                     const timeColorClass = isTugas ? 'text-red-500' : 'text-green-600';
-                    const icon = isTugas ? '📚' : '🏆';
                     const timeFormatted = formatDate(item.waktu, isTugas);
 
                     const card = document.createElement('div');
@@ -234,7 +228,7 @@
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-2">
                             <h3 class="font-bold text-gray-800 text-lg flex items-center gap-2">
-                                <span>${icon}</span> ${item.judul}
+                                ${item.judul}
                             </h3>
                             <button onclick="promptDelete('${item.id}')" class="text-gray-300 hover:text-red-500 p-1 transition-colors rounded-full hover:bg-red-50">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -284,11 +278,10 @@
             }
         }
 
-        // Open Modal (Dynamic based on tab)
+        // Open Modal
         window.openModal = function() {
             modalOverlay.classList.remove('hidden');
             
-            // Trigger animation
             setTimeout(() => {
                 modalContent.classList.remove('scale-95', 'opacity-0');
                 modalContent.classList.add('scale-100', 'opacity-100');
@@ -297,11 +290,11 @@
             if (currentTab === 'tugas') {
                 modalTitle.textContent = "Tambah Tugas Kuliah";
                 labelWaktu.textContent = "Waktu Deadline";
-                inputWaktu.type = "datetime-local"; // Need time for deadline
+                inputWaktu.type = "datetime-local"; 
             } else {
                 modalTitle.textContent = "Tambah Riwayat Lomba";
                 labelWaktu.textContent = "Tanggal Pelaksanaan";
-                inputWaktu.type = "date"; // Just date for history
+                inputWaktu.type = "date"; 
             }
         }
 
@@ -316,7 +309,7 @@
             }, 200);
         }
 
-        // Save Data
+        // Trigger request permission and save
         window.saveData = function(e) {
             e.preventDefault();
             
@@ -329,12 +322,13 @@
                 judul: inputJudul.value,
                 deskripsi: inputDeskripsi.value,
                 waktu: inputWaktu.value,
-                notified: false // Status untuk mencegah notif berulang
+                notified: false
             };
 
             if (currentTab === 'tugas') {
                 tasks.push(newItem);
                 localStorage.setItem('trackapp_tugas', JSON.stringify(tasks));
+                checkDeadlines(); // Langsung cek notifikasi sesudah simpan
             } else {
                 competitions.push(newItem);
                 localStorage.setItem('trackapp_lomba', JSON.stringify(competitions));
@@ -344,15 +338,33 @@
             renderData();
         }
 
-        // Initial Render
         renderData();
 
+        // Fungsi khusus pengiriman notifikasi yang lebih kuat (lewat Service Worker)
+        function triggerNotification(title, body) {
+            const options = {
+                body: body,
+                icon: "https://placehold.co/192x192/4f46e5/ffffff?text=TA",
+                vibrate: [200, 100, 200]
+            };
+
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.ready.then(function(registration) {
+                    registration.showNotification(title, options);
+                }).catch(function() {
+                    // Fallback jika SW gagal
+                    new Notification(title, options);
+                });
+            } else {
+                new Notification(title, options);
+            }
+        }
+
         function checkDeadlines() {
-            // Cek jika browser mendukung notifikasi dan sudah diizinkan
             if (!("Notification" in window) || Notification.permission !== "granted") return;
             
             const now = new Date().getTime();
-            const oneDay = 24 * 60 * 60 * 1000; // 24 jam dalam milidetik
+            const oneDay = 24 * 60 * 60 * 1000;
             let needsSave = false;
 
             tasks.forEach(task => {
@@ -360,13 +372,10 @@
                     const taskTime = new Date(task.waktu).getTime();
                     const timeDiff = taskTime - now;
                     
-                    // Jika waktu deadline <= 24 jam ke depan
+                    // Cek jika waktu deadline berada di antara sekarang (0) sampai 24 jam ke depan
                     if (timeDiff > 0 && timeDiff <= oneDay) {
-                        new Notification("Pengingat Tugas! 📚", {
-                            body: `Tugas "${task.judul}" akan mencapai deadline dalam kurang dari 24 jam!`,
-                            icon: "https://placehold.co/192x192/4f46e5/ffffff?text=TA"
-                        });
-                        task.notified = true; // Tandai agar tidak di-spam
+                        triggerNotification("Pengingat Tugas! 📚", `Tugas "${task.judul}" memiliki deadline dalam waktu kurang dari 24 jam!`);
+                        task.notified = true;
                         needsSave = true;
                     }
                 }
@@ -377,13 +386,10 @@
             }
         }
 
-        // Cek notifikasi secara berkala (Setiap 1 menit) saat web terbuka
         checkDeadlines();
         setInterval(checkDeadlines, 60000);
 
-        // --- PWA CAPABILITIES & INSTALLATION ---
-        
-        // 1. Inject Dynamic Web App Manifest (to satisfy PWA requirements in 1 file)
+        // --- PWA CAPABILITIES ---
         const appManifest = {
             "name": "TrackApp Tugas & Lomba",
             "short_name": "TrackApp",
@@ -412,41 +418,30 @@
         const manifestString = JSON.stringify(appManifest);
         document.getElementById('dynamic-manifest').setAttribute('href', 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(manifestString));
 
-        // 2. Handle Install Prompt (beforeinstallprompt)
         let deferredPrompt;
         const installBanner = document.getElementById('install-banner');
         const installBtn = document.getElementById('install-btn');
 
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent Chrome 67 and earlier from automatically showing the prompt
             e.preventDefault();
-            // Stash the event so it can be triggered later.
             deferredPrompt = e;
-            // Update UI to notify the user they can add to home screen
             installBanner.classList.remove('hidden');
         });
 
         installBtn.addEventListener('click', async () => {
-            // Hide the app provided install promotion
             installBanner.classList.add('hidden');
-            // Show the install prompt
             if (deferredPrompt) {
                 deferredPrompt.prompt();
-                // Wait for the user to respond to the prompt
                 const { outcome } = await deferredPrompt.userChoice;
-                console.log(`User response to the install prompt: ${outcome}`);
-                // We've used the prompt, and can't use it again, throw it away
                 deferredPrompt = null;
             }
         });
 
-        // 3. Register a dummy Service Worker to trigger PWA installability check
-        // We use a Blob to keep everything in one file
+        // Register Service Worker
         const swCode = `
             self.addEventListener('install', (e) => { self.skipWaiting(); });
             self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
             self.addEventListener('fetch', (e) => { 
-                // Just pass through requests to network
                 e.respondWith(fetch(e.request).catch(() => new Response('App is offline'))); 
             });
         `;
