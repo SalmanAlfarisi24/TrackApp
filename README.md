@@ -16,6 +16,8 @@ PWA (Service Worker & Web Manifest): Mengaktifkan fitur instalasi ke layar utama
 
 🚀 Cara Akses & Penggunaan
 
+https://salmanalfarisi24.github.io/TrackApp/
+
 Buka tautan URL web TrackApp melalui browser di perangkat Anda (disarankan menggunakan Google Chrome atau Safari di HP).
 
 Saat web terbuka, akan muncul banner "Install App", atau Anda bisa membuka menu browser (titik tiga) lalu memilih "Tambahkan ke Layar Utama" (Add to Home Screen).
