@@ -25,9 +25,14 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Modal Transition */
-        .modal-enter { opacity: 0; transform: scale(0.95); }
-        .modal-enter-active { opacity: 1; transform: scale(1); transition: opacity 200ms ease-out, transform 200ms ease-out; }
+        .accordion-content { max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.3s ease-out, opacity 0.3s ease-out; }
+        .accordion-open { max-height: 1000px; opacity: 1; transition: max-height 0.5s ease-in, opacity 0.3s ease-in; }
+        .item-enter { animation: slideUp 0.3s ease-out forwards; opacity: 0; }
+        .item-leave { opacity: 0; transform: translateX(-100%) scale(0.95); transition: all 0.3s ease-in-out; }
+        .tab-enter { animation: fadeIn 0.3s ease-out forwards; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body class="text-gray-800 antialiased overflow-hidden">
@@ -182,17 +187,23 @@
         // Tabs
         function switchTab(tab) {
             currentTab = tab;
-            expandedItemId = null; // Reset accordion saat ganti tab
+            expandedItemId = null; 
+            
+            viewTugas.classList.remove('tab-enter');
+            viewLomba.classList.remove('tab-enter');
+            void viewTugas.offsetWidth;
             
             if (tab === 'tugas') {
                 tabTugasBtn.className = "flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors bg-indigo-100 text-indigo-700 shadow-sm border border-indigo-200";
                 tabLombaBtn.className = "flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors text-gray-500 hover:bg-gray-100 border border-transparent";
                 viewTugas.classList.remove('hidden');
+                viewTugas.classList.add('tab-enter');
                 viewLomba.classList.add('hidden');
             } else {
                 tabLombaBtn.className = "flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors bg-green-100 text-green-700 shadow-sm border border-green-200";
                 tabTugasBtn.className = "flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors text-gray-500 hover:bg-gray-100 border border-transparent";
                 viewLomba.classList.remove('hidden');
+                viewLomba.classList.add('tab-enter');
                 viewTugas.classList.add('hidden');
             }
             renderData();
@@ -213,7 +224,7 @@
             emptyState.classList.add('hidden');
             const sortedData = [...dataArr].sort((a, b) => currentTab === 'tugas' ? new Date(a.waktu) - new Date(b.waktu) : new Date(b.waktu) - new Date(a.waktu));
 
-            sortedData.forEach(item => {
+            sortedData.forEach((item, index) => {
                 const isTugas = currentTab === 'tugas';
                 const timeColorClass = isTugas ? 'text-red-500' : 'text-green-600';
                 const timeFormatted = formatDate(item.waktu, isTugas);
@@ -221,7 +232,9 @@
                 const safeHTMLDeskripsi = linkify(escapeHTML(item.deskripsi));
 
                 const card = document.createElement('div');
-                card.className = "bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow relative";
+                card.id = `card-${item.id}`;
+                card.className = "bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow relative item-enter";
+                card.style.animationDelay = `${index * 40}ms`;
                 
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-2">
@@ -230,16 +243,18 @@
                             <h3 class="font-bold text-gray-800 text-lg select-none">${item.judul}</h3>
                         </div>
                         <div class="flex space-x-1 ml-3 flex-shrink-0">
-                            <button onclick="openEditModal('${item.id}')" class="text-gray-300 hover:text-indigo-500 p-1.5 transition-colors rounded-full hover:bg-indigo-50">
+                            <button onclick="openEditModal('${item.id}')" class="text-gray-300 hover:text-indigo-500 p-1.5 transition-all rounded-full hover:bg-indigo-50 active:scale-90">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                             </button>
-                            <button onclick="promptDelete('${item.id}')" class="text-gray-300 hover:text-red-500 p-1.5 transition-colors rounded-full hover:bg-red-50">
+                            <button onclick="promptDelete('${item.id}')" class="text-gray-300 hover:text-red-500 p-1.5 transition-all rounded-full hover:bg-red-50 active:scale-90">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
                     </div>
                     
-                    <div class="${isExpanded ? 'block' : 'hidden'} pl-7 text-sm text-gray-600 mb-4 whitespace-pre-wrap leading-relaxed animate-fade-in">${safeHTMLDeskripsi}</div>
+                    <div class="accordion-content ${isExpanded ? 'accordion-open' : ''}">
+                        <div class="pl-7 text-sm text-gray-600 mb-4 mt-2 whitespace-pre-wrap leading-relaxed">${safeHTMLDeskripsi}</div>
+                    </div>
                     
                     <div class="flex items-center text-xs font-semibold ${timeColorClass} bg-gray-50 inline-block px-3 py-1.5 rounded-lg border border-gray-100 mt-1">
                         <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -268,15 +283,28 @@
 
         window.executeDelete = function() {
             if(!itemToDeleteId) return;
-            if(currentTab === 'tugas') {
-                tasks = tasks.filter(t => t.id !== itemToDeleteId);
-                localStorage.setItem('trackapp_tugas', JSON.stringify(tasks));
-            } else {
-                competitions = competitions.filter(c => c.id !== itemToDeleteId);
-                localStorage.setItem('trackapp_lomba', JSON.stringify(competitions));
-            }
-            renderData();
+            const currentId = itemToDeleteId;
             closeDeleteModal();
+            
+            const cardEl = document.getElementById(`card-${currentId}`);
+            
+            const performDelete = () => {
+                if(currentTab === 'tugas') {
+                    tasks = tasks.filter(t => t.id !== currentId);
+                    localStorage.setItem('trackapp_tugas', JSON.stringify(tasks));
+                } else {
+                    competitions = competitions.filter(c => c.id !== currentId);
+                    localStorage.setItem('trackapp_lomba', JSON.stringify(competitions));
+                }
+                renderData();
+            };
+
+            if (cardEl) {
+                cardEl.classList.add('item-leave');
+                setTimeout(performDelete, 300);
+            } else {
+                performDelete();
+            }
         }
 
         // Modal Actions (Add/Edit)
