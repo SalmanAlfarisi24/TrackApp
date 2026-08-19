@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TrackApp</title>
     
-    <!-- PWA Meta -->
+    <!-- PWA -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -16,7 +16,7 @@
     <link rel="apple-touch-icon" href="https://placehold.co/192x192/4f46e5/ffffff?text=TA">
     <link rel="manifest" id="dynamic-manifest">
     
-    <!-- Styling & Fonts -->
+    <!-- CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -25,27 +25,26 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
+        /* Animasi */
         .accordion-content { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .accordion-inner { overflow: hidden; opacity: 0; transform: translateY(-5px); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .accordion-inner { overflow: hidden; opacity: 0; transform: translateY(-10px); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .accordion-open { grid-template-rows: 1fr; }
         .accordion-open .accordion-inner { opacity: 1; transform: translateY(0); }
-        
-        .item-enter { animation: slideUp 0.3s ease-out forwards; opacity: 0; }
-        .item-leave { opacity: 0; transform: translateX(-100%) scale(0.95); transition: all 0.3s ease-in-out; }
+        .item-enter { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .item-leave { opacity: 0; transform: translateX(-30px) scale(0.95); transition: all 0.3s ease-in-out; }
         .tab-enter { animation: fadeIn 0.3s ease-out forwards; }
-        
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body class="text-gray-800 antialiased overflow-hidden">
 
-    <!-- Container -->
-    <div class="max-w-md mx-auto bg-white h-[100dvh] flex flex-col relative shadow-2xl overflow-hidden">
+    <!-- Wrapper -->
+    <div class="w-full bg-gray-50 h-[100dvh] flex flex-col relative overflow-hidden">
         
-        <!-- Install PWA -->
-        <div id="install-banner" class="hidden absolute top-4 left-4 right-4 bg-white border border-gray-100 rounded-2xl shadow-2xl z-[60] p-4 flex items-center justify-between animate-[slideDown_0.3s_ease-out]">
+        <!-- PWA Banner -->
+        <div id="install-banner" class="hidden absolute top-4 left-1/2 transform -translate-x-1/2 w-[90%] max-w-sm bg-white border border-gray-100 rounded-2xl shadow-2xl z-[60] p-4 flex items-center justify-between animate-[slideDown_0.4s_ease-out]">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
                     <span class="text-white font-bold">TA</span>
@@ -64,43 +63,55 @@
         </div>
 
         <!-- Header -->
-        <header class="bg-indigo-600 text-white pt-6 pb-4 px-6 rounded-b-2xl shadow-md z-10 flex-shrink-0">
-            <h1 class="text-2xl font-bold tracking-tight">TrackApp</h1>
-            <p class="text-indigo-200 text-sm mt-1">Kelola Tugas & Lomba Anda</p>
+        <header class="bg-indigo-600 text-white pt-6 pb-4 md:pt-8 md:pb-6 px-6 md:px-8 shadow-md z-10 flex-shrink-0 w-full">
+            <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold tracking-tight">TrackApp</h1>
+                    <p class="text-indigo-200 text-sm md:text-base mt-1">Kelola Tugas & Lomba Anda</p>
+                </div>
+                <!-- Add Desktop -->
+                <button onclick="openModal()" class="hidden md:flex items-center gap-2 bg-white text-indigo-600 px-5 py-2.5 rounded-xl font-bold shadow hover:bg-indigo-50 active:scale-95 transition-all mt-4 md:mt-0">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Tambah Data
+                </button>
+            </div>
         </header>
 
         <!-- Tabs -->
-        <div class="flex px-4 pt-4 pb-2 space-x-2 flex-shrink-0">
-            <button id="tab-tugas" onclick="switchTab('tugas')" class="flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors bg-indigo-100 text-indigo-700 shadow-sm border border-indigo-200">
+        <div class="max-w-5xl mx-auto w-full flex md:justify-center px-4 md:px-8 pt-4 md:pt-8 pb-2 space-x-2 md:space-x-4 flex-shrink-0">
+            <button id="tab-tugas" onclick="switchTab('tugas')" class="flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors bg-indigo-100 text-indigo-700 shadow-sm border border-indigo-200 active:scale-95">
                 Tugas Kuliah
             </button>
-            <button id="tab-lomba" onclick="switchTab('lomba')" class="flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors text-gray-500 hover:bg-gray-100 border border-transparent">
+            <button id="tab-lomba" onclick="switchTab('lomba')" class="flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors text-gray-500 hover:bg-gray-100 border border-transparent active:scale-95">
                 Lomba
             </button>
         </div>
 
         <!-- Content -->
-        <main class="flex-1 overflow-y-auto no-scrollbar p-4 relative pb-24">
-            <div id="view-tugas" class="space-y-4"></div>
-            <div id="view-lomba" class="hidden space-y-4"></div>
+        <main class="flex-1 overflow-y-auto no-scrollbar p-4 md:px-8 md:py-6 relative pb-24 md:pb-8 w-full">
+            <div class="max-w-5xl mx-auto h-full">
+                <div id="view-tugas" class="flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:items-start md:gap-6"></div>
+                <div id="view-lomba" class="hidden flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:items-start md:gap-6"></div>
 
-            <div id="empty-state" class="hidden flex flex-col items-center justify-center h-full text-gray-400 mt-20">
-                <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                <p class="text-center font-medium">Belum ada data.<br>Tekan tombol + untuk menambah.</p>
+                <!-- Empty -->
+                <div id="empty-state" class="hidden flex flex-col items-center justify-center h-full text-gray-400 mt-10 md:mt-20">
+                    <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                    <p class="text-center font-medium">Belum ada data.<br>Tekan tombol + untuk menambah.</p>
+                </div>
             </div>
         </main>
 
-        <!-- FAB Add -->
-        <button onclick="openModal()" class="absolute bottom-6 right-6 w-14 h-14 bg-indigo-600 rounded-full shadow-lg hover:shadow-xl text-white flex items-center justify-center hover:bg-indigo-700 active:bg-indigo-800 active:scale-90 transition-all z-20">
+        <!-- Add Mobile -->
+        <button onclick="openModal()" class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-indigo-600 rounded-full shadow-lg hover:shadow-xl text-white flex items-center justify-center hover:bg-indigo-700 active:scale-90 transition-all z-20">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
         </button>
 
-        <!-- Modal Form -->
-        <div id="modal-overlay" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center px-4">
-            <div id="modal-content" class="bg-white rounded-2xl w-full max-w-sm shadow-2xl p-6 transition-all transform scale-95 opacity-0">
+        <!-- Form Modal -->
+        <div id="modal-overlay" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center px-4 transition-opacity duration-300 opacity-0">
+            <div id="modal-content" class="bg-white rounded-2xl w-full max-w-sm shadow-2xl p-6 transition-all duration-300 transform scale-95">
                 <div class="flex justify-between items-center mb-5">
                     <h2 id="modal-title" class="text-xl font-bold text-gray-800">Tambah Data</h2>
-                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 p-1">
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
@@ -113,7 +124,7 @@
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
-                            <textarea id="input-deskripsi" rows="3" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none" placeholder="Tulis keterangan detail (bisa sertakan link URL)..."></textarea>
+                            <textarea id="input-deskripsi" rows="3" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none" placeholder="Tulis keterangan detail..."></textarea>
                         </div>
                         <div>
                             <label id="label-waktu" class="block text-sm font-medium text-gray-700 mb-1">Waktu</label>
@@ -129,9 +140,9 @@
             </div>
         </div>
 
-        <!-- Modal Delete -->
-        <div id="delete-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center px-4">
-            <div id="delete-modal-content" class="bg-white rounded-2xl w-full max-w-sm shadow-2xl p-6 transition-all transform scale-95 opacity-0 text-center">
+        <!-- Delete Modal -->
+        <div id="delete-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center px-4 transition-opacity duration-300 opacity-0">
+            <div id="delete-modal-content" class="bg-white rounded-2xl w-full max-w-sm shadow-2xl p-6 transition-all duration-300 transform scale-95 text-center">
                 <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
                     <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                 </div>
@@ -147,21 +158,20 @@
     </div>
 
     <script>
-        // App State
+        /* Variables */
         let currentTab = 'tugas';
         let tasks = JSON.parse(localStorage.getItem('trackapp_tugas')) || [];
         let competitions = JSON.parse(localStorage.getItem('trackapp_lomba')) || [];
         let editingItemId = null;
         let itemToDeleteId = null;
-        let expandedItemId = null; // State Accordion
+        let expandedItemId = null;
 
-        // DOM Nodes
+        /* DOM */
         const tabTugasBtn = document.getElementById('tab-tugas');
         const tabLombaBtn = document.getElementById('tab-lomba');
         const viewTugas = document.getElementById('view-tugas');
         const viewLomba = document.getElementById('view-lomba');
         const emptyState = document.getElementById('empty-state');
-        
         const modalOverlay = document.getElementById('modal-overlay');
         const modalContent = document.getElementById('modal-content');
         const modalTitle = document.getElementById('modal-title');
@@ -169,11 +179,10 @@
         const inputWaktu = document.getElementById('input-waktu');
         const inputJudul = document.getElementById('input-judul');
         const inputDeskripsi = document.getElementById('input-deskripsi');
-
         const deleteModal = document.getElementById('delete-modal');
         const deleteModalContent = document.getElementById('delete-modal-content');
 
-        // Utils
+        /* Format */
         function formatDate(dateString, isDatetime) {
             const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
             if (isDatetime) {
@@ -192,26 +201,30 @@
             return text.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-indigo-500 font-medium hover:underline hover:text-indigo-700" onclick="event.stopPropagation()">${url}</a>`);
         }
 
-        // Accordion Toggle
+        /* Accordion */
         window.toggleDescription = function(id) {
+            if (expandedItemId && expandedItemId !== id) {
+                const prevContent = document.getElementById(`content-${expandedItemId}`);
+                const prevArrow = document.getElementById(`arrow-${expandedItemId}`);
+                if (prevContent) prevContent.classList.remove('accordion-open');
+                if (prevArrow) prevArrow.classList.remove('rotate-90');
+            }
+            
+            const currentContent = document.getElementById(`content-${id}`);
+            const currentArrow = document.getElementById(`arrow-${id}`);
+            
             if (expandedItemId === id) {
-                document.getElementById(`content-${id}`)?.classList.remove('accordion-open');
-                document.getElementById(`arrow-${id}`)?.classList.remove('rotate-90');
+                currentContent.classList.remove('accordion-open');
+                currentArrow.classList.remove('rotate-90');
                 expandedItemId = null;
-                return;
+            } else {
+                currentContent.classList.add('accordion-open');
+                currentArrow.classList.add('rotate-90');
+                expandedItemId = id;
             }
-
-            if (expandedItemId) {
-                document.getElementById(`content-${expandedItemId}`)?.classList.remove('accordion-open');
-                document.getElementById(`arrow-${expandedItemId}`)?.classList.remove('rotate-90');
-            }
-
-            expandedItemId = id;
-            document.getElementById(`content-${id}`)?.classList.add('accordion-open');
-            document.getElementById(`arrow-${id}`)?.classList.add('rotate-90');
         }
 
-        // Tabs
+        /* Tab */
         function switchTab(tab) {
             currentTab = tab;
             expandedItemId = null; 
@@ -221,22 +234,24 @@
             void viewTugas.offsetWidth;
             
             if (tab === 'tugas') {
-                tabTugasBtn.className = "flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors bg-indigo-100 text-indigo-700 shadow-sm border border-indigo-200";
-                tabLombaBtn.className = "flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors text-gray-500 hover:bg-gray-100 border border-transparent";
+                tabTugasBtn.className = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors bg-indigo-100 text-indigo-700 shadow-sm border border-indigo-200 active:scale-95";
+                tabLombaBtn.className = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors text-gray-500 hover:bg-gray-100 border border-transparent active:scale-95";
                 viewTugas.classList.remove('hidden');
-                viewTugas.classList.add('tab-enter');
+                viewTugas.classList.add('flex', 'tab-enter');
                 viewLomba.classList.add('hidden');
+                viewLomba.classList.remove('flex');
             } else {
-                tabLombaBtn.className = "flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors bg-green-100 text-green-700 shadow-sm border border-green-200";
-                tabTugasBtn.className = "flex-1 py-2 px-4 rounded-full font-semibold text-sm transition-colors text-gray-500 hover:bg-gray-100 border border-transparent";
+                tabLombaBtn.className = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors bg-green-100 text-green-700 shadow-sm border border-green-200 active:scale-95";
+                tabTugasBtn.className = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors text-gray-500 hover:bg-gray-100 border border-transparent active:scale-95";
                 viewLomba.classList.remove('hidden');
-                viewLomba.classList.add('tab-enter');
+                viewLomba.classList.add('flex', 'tab-enter');
                 viewTugas.classList.add('hidden');
+                viewTugas.classList.remove('flex');
             }
             renderData();
         }
 
-        // Render View
+        /* List */
         function renderData() {
             const listContainer = currentTab === 'tugas' ? viewTugas : viewLomba;
             const dataArr = currentTab === 'tugas' ? tasks : competitions;
@@ -260,20 +275,20 @@
 
                 const card = document.createElement('div');
                 card.id = `card-${item.id}`;
-                card.className = "bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow relative item-enter";
-                card.style.animationDelay = `${index * 40}ms`;
+                card.className = "bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow relative item-enter w-full";
+                card.style.animationDelay = `${index * 30}ms`;
                 
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-2">
                         <div class="flex items-center gap-2 cursor-pointer flex-1" onclick="toggleDescription('${item.id}')">
                             <svg id="arrow-${item.id}" class="w-5 h-5 text-gray-400 transform transition-transform duration-300 flex-shrink-0 ${isExpanded ? 'rotate-90' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                            <h3 class="font-bold text-gray-800 text-lg select-none">${item.judul}</h3>
+                            <h3 class="font-bold text-gray-800 text-lg select-none break-all">${item.judul}</h3>
                         </div>
                         <div class="flex space-x-1 ml-3 flex-shrink-0">
-                            <button onclick="openEditModal('${item.id}')" class="text-gray-300 hover:text-indigo-500 p-1.5 transition-all rounded-full hover:bg-indigo-50 active:scale-90">
+                            <button onclick="openEditModal('${item.id}')" class="text-gray-400 hover:text-indigo-500 p-1.5 transition-all rounded-full hover:bg-indigo-50 active:scale-75">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                             </button>
-                            <button onclick="promptDelete('${item.id}')" class="text-gray-300 hover:text-red-500 p-1.5 transition-all rounded-full hover:bg-red-50 active:scale-90">
+                            <button onclick="promptDelete('${item.id}')" class="text-gray-400 hover:text-red-500 p-1.5 transition-all rounded-full hover:bg-red-50 active:scale-75">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
@@ -281,11 +296,11 @@
                     
                     <div id="content-${item.id}" class="accordion-content ${isExpanded ? 'accordion-open' : ''}">
                         <div class="accordion-inner">
-                            <div class="pl-7 text-sm text-gray-600 mb-4 mt-2 whitespace-pre-wrap leading-relaxed">${safeHTMLDeskripsi}</div>
+                            <div class="pl-7 text-sm text-gray-600 mb-4 mt-2 whitespace-pre-wrap leading-relaxed break-words">${safeHTMLDeskripsi}</div>
                         </div>
                     </div>
                     
-                    <div class="flex items-center text-xs font-semibold ${timeColorClass} bg-gray-50 inline-block px-3 py-1.5 rounded-lg border border-gray-100 mt-1">
+                    <div class="flex items-center text-xs font-semibold ${timeColorClass} bg-gray-50 inline-flex px-3 py-1.5 rounded-lg border border-gray-100 mt-1">
                         <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         ${isTugas ? 'Deadline: ' : 'Dilaksanakan: '} ${timeFormatted}
                     </div>
@@ -294,20 +309,21 @@
             });
         }
 
-        // Delete Actions
+        /* Delete Dialog */
         window.promptDelete = function(id) {
             itemToDeleteId = id;
             deleteModal.classList.remove('hidden');
             setTimeout(() => {
-                deleteModalContent.classList.remove('scale-95', 'opacity-0');
-                deleteModalContent.classList.add('scale-100', 'opacity-100');
+                deleteModal.classList.remove('opacity-0');
+                deleteModalContent.classList.remove('scale-95');
             }, 10);
         }
 
+        /* Execute Delete */
         window.closeDeleteModal = function() {
-            deleteModalContent.classList.remove('scale-100', 'opacity-100');
-            deleteModalContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => { deleteModal.classList.add('hidden'); itemToDeleteId = null; }, 200);
+            deleteModal.classList.add('opacity-0');
+            deleteModalContent.classList.add('scale-95');
+            setTimeout(() => { deleteModal.classList.add('hidden'); itemToDeleteId = null; }, 300);
         }
 
         window.executeDelete = function() {
@@ -336,14 +352,14 @@
             }
         }
 
-        // Modal Actions (Add/Edit)
+        /* Form Modal */
         window.openModal = function() {
             editingItemId = null;
             document.getElementById('add-form').reset();
             modalOverlay.classList.remove('hidden');
             setTimeout(() => {
-                modalContent.classList.remove('scale-95', 'opacity-0');
-                modalContent.classList.add('scale-100', 'opacity-100');
+                modalOverlay.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
             }, 10);
 
             modalTitle.textContent = currentTab === 'tugas' ? "Tambah Tugas" : "Tambah Lomba";
@@ -362,8 +378,8 @@
 
             modalOverlay.classList.remove('hidden');
             setTimeout(() => {
-                modalContent.classList.remove('scale-95', 'opacity-0');
-                modalContent.classList.add('scale-100', 'opacity-100');
+                modalOverlay.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
             }, 10);
 
             modalTitle.textContent = currentTab === 'tugas' ? "Edit Tugas" : "Edit Lomba";
@@ -372,48 +388,53 @@
         }
 
         window.closeModal = function() {
-            modalContent.classList.remove('scale-100', 'opacity-100');
-            modalContent.classList.add('scale-95', 'opacity-0');
+            modalOverlay.classList.add('opacity-0');
+            modalContent.classList.add('scale-95');
             setTimeout(() => {
                 modalOverlay.classList.add('hidden');
                 document.getElementById('add-form').reset();
                 editingItemId = null;
-            }, 200);
+            }, 300);
         }
 
-        // Save Form
-        window.saveData = async function(e) {
+        /* Save */
+        window.saveData = function(e) {
             e.preventDefault();
             
-            if ("Notification" in window && Notification.permission === "default") {
-                const permission = await Notification.requestPermission();
-                if (permission === "granted") triggerNotification("✅ Notifikasi Aktif!", "TrackApp siap mengirim pengingat.");
-            }
-            
-            const targetArray = currentTab === 'tugas' ? tasks : competitions;
-            
-            if (editingItemId) {
-                const itemIndex = targetArray.findIndex(t => t.id === editingItemId);
-                if (itemIndex > -1) {
-                    targetArray[itemIndex] = { ...targetArray[itemIndex], judul: inputJudul.value, deskripsi: inputDeskripsi.value, waktu: inputWaktu.value, notified: false };
+            const doSave = () => {
+                const targetArray = currentTab === 'tugas' ? tasks : competitions;
+                if (editingItemId) {
+                    const itemIndex = targetArray.findIndex(t => t.id === editingItemId);
+                    if (itemIndex > -1) {
+                        targetArray[itemIndex] = { ...targetArray[itemIndex], judul: inputJudul.value, deskripsi: inputDeskripsi.value, waktu: inputWaktu.value, notified: false };
+                    }
+                } else {
+                    targetArray.push({ id: Date.now().toString(), judul: inputJudul.value, deskripsi: inputDeskripsi.value, waktu: inputWaktu.value, notified: false });
                 }
-            } else {
-                targetArray.push({ id: Date.now().toString(), judul: inputJudul.value, deskripsi: inputDeskripsi.value, waktu: inputWaktu.value, notified: false });
-            }
 
-            if (currentTab === 'tugas') {
-                localStorage.setItem('trackapp_tugas', JSON.stringify(tasks));
-                checkDeadlines(); 
-            } else {
-                localStorage.setItem('trackapp_lomba', JSON.stringify(competitions));
-            }
+                if (currentTab === 'tugas') {
+                    localStorage.setItem('trackapp_tugas', JSON.stringify(tasks));
+                    checkDeadlines(); 
+                } else {
+                    localStorage.setItem('trackapp_lomba', JSON.stringify(competitions));
+                }
 
-            expandedItemId = editingItemId || targetArray[targetArray.length - 1].id; // Buka accordion list yang baru disimpan/diedit
-            closeModal();
-            renderData();
+                expandedItemId = editingItemId || targetArray[targetArray.length - 1].id;
+                closeModal();
+                renderData();
+            };
+
+            if ("Notification" in window && Notification.permission === "default") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") triggerNotification("✅ Notifikasi Aktif!", "TrackApp siap mengirim pengingat.");
+                    doSave();
+                });
+            } else {
+                doSave();
+            }
         }
 
-        // Notifications Check
+        /* Notify */
         function triggerNotification(title, body) {
             const options = { body: body, icon: "https://placehold.co/192x192/4f46e5/ffffff?text=TA", vibrate: [200, 100, 200] };
             if ('serviceWorker' in navigator) {
@@ -423,6 +444,7 @@
             }
         }
 
+        /* Deadline */
         function checkDeadlines() {
             if (!("Notification" in window) || Notification.permission !== "granted") return;
             
@@ -443,12 +465,12 @@
             if (needsSave) localStorage.setItem('trackapp_tugas', JSON.stringify(tasks));
         }
 
-        // Init
+        /* Init */
         renderData();
         checkDeadlines();
         setInterval(checkDeadlines, 60000);
 
-        // PWA Setup
+        /* Manifest */
         const appManifest = {
             "name": "TrackApp",
             "short_name": "TrackApp",
@@ -460,6 +482,7 @@
         };
         document.getElementById('dynamic-manifest').setAttribute('href', 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(appManifest)));
 
+        /* Install */
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -479,12 +502,10 @@
             document.getElementById('install-banner').classList.add('hidden');
         };
 
-        // PWA Service Worker (Aman dari error Blob)
+        /* Worker Check */
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(() => {
-                    console.log('Catatan: Untuk mengaktifkan mode offline sepenuhnya di GitHub Pages, buatlah file kosong bernama sw.js di samping file index.html ini.');
-                });
+                navigator.serviceWorker.register('./sw.js').catch(() => { });
             });
         }
     </script>
