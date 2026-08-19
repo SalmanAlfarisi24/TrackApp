@@ -25,13 +25,17 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        .accordion-content { max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.3s ease-out, opacity 0.3s ease-out; }
-        .accordion-open { max-height: 1000px; opacity: 1; transition: max-height 0.5s ease-in, opacity 0.3s ease-in; }
+        .accordion-content { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .accordion-inner { overflow: hidden; opacity: 0; transform: translateY(-5px); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .accordion-open { grid-template-rows: 1fr; }
+        .accordion-open .accordion-inner { opacity: 1; transform: translateY(0); }
+        
         .item-enter { animation: slideUp 0.3s ease-out forwards; opacity: 0; }
         .item-leave { opacity: 0; transform: translateX(-100%) scale(0.95); transition: all 0.3s ease-in-out; }
         .tab-enter { animation: fadeIn 0.3s ease-out forwards; }
         
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
@@ -41,12 +45,22 @@
     <div class="max-w-md mx-auto bg-white h-screen flex flex-col relative shadow-2xl overflow-hidden">
         
         <!-- Install PWA -->
-        <div id="install-banner" class="hidden bg-indigo-600 text-white px-4 py-3 flex justify-between items-center z-50">
-            <div class="flex flex-col">
-                <span class="font-bold text-sm">Install App</span>
-                <span class="text-xs text-indigo-200">Tambahkan ke layar utama</span>
+        <div id="install-banner" class="hidden absolute top-4 left-4 right-4 bg-white border border-gray-100 rounded-2xl shadow-2xl z-[60] p-4 flex items-center justify-between animate-[slideDown_0.3s_ease-out]">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <span class="text-white font-bold">TA</span>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-sm text-gray-800">Install TrackApp</span>
+                    <span class="text-xs text-gray-500">Tambahkan ke layar utama</span>
+                </div>
             </div>
-            <button id="install-btn" class="bg-white text-indigo-600 px-3 py-1 rounded-full text-sm font-semibold shadow active:scale-95 transition-transform">Install</button>
+            <div class="flex items-center gap-2">
+                <button id="install-btn" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold shadow hover:bg-indigo-700 active:scale-95 transition-all">Install</button>
+                <button onclick="closeInstallBanner()" class="text-gray-400 hover:text-gray-600 p-1.5 rounded-full hover:bg-gray-100 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
         </div>
 
         <!-- Header -->
@@ -266,7 +280,9 @@
                     </div>
                     
                     <div id="content-${item.id}" class="accordion-content ${isExpanded ? 'accordion-open' : ''}">
-                        <div class="pl-7 text-sm text-gray-600 mb-4 mt-2 whitespace-pre-wrap leading-relaxed">${safeHTMLDeskripsi}</div>
+                        <div class="accordion-inner">
+                            <div class="pl-7 text-sm text-gray-600 mb-4 mt-2 whitespace-pre-wrap leading-relaxed">${safeHTMLDeskripsi}</div>
+                        </div>
                     </div>
                     
                     <div class="flex items-center text-xs font-semibold ${timeColorClass} bg-gray-50 inline-block px-3 py-1.5 rounded-lg border border-gray-100 mt-1">
@@ -458,6 +474,10 @@
                 deferredPrompt = null;
             }
         });
+
+        window.closeInstallBanner = function() {
+            document.getElementById('install-banner').classList.add('hidden');
+        };
 
         // PWA Service Worker (Aman dari error Blob)
         if ('serviceWorker' in navigator) {
