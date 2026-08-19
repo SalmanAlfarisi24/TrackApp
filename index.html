@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TrackApp</title>
+    <title>TrackApp - Tugas & Lomba</title>
     
     <!-- PWA Meta -->
     <meta name="mobile-web-app-capable" content="yes">
@@ -180,8 +180,21 @@
 
         // Accordion Toggle
         window.toggleDescription = function(id) {
-            expandedItemId = (expandedItemId === id) ? null : id;
-            renderData();
+            if (expandedItemId === id) {
+                document.getElementById(`content-${id}`)?.classList.remove('accordion-open');
+                document.getElementById(`arrow-${id}`)?.classList.remove('rotate-90');
+                expandedItemId = null;
+                return;
+            }
+
+            if (expandedItemId) {
+                document.getElementById(`content-${expandedItemId}`)?.classList.remove('accordion-open');
+                document.getElementById(`arrow-${expandedItemId}`)?.classList.remove('rotate-90');
+            }
+
+            expandedItemId = id;
+            document.getElementById(`content-${id}`)?.classList.add('accordion-open');
+            document.getElementById(`arrow-${id}`)?.classList.add('rotate-90');
         }
 
         // Tabs
@@ -239,7 +252,7 @@
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-2">
                         <div class="flex items-center gap-2 cursor-pointer flex-1" onclick="toggleDescription('${item.id}')">
-                            <svg class="w-5 h-5 text-gray-400 transform transition-transform duration-300 flex-shrink-0 ${isExpanded ? 'rotate-90' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <svg id="arrow-${item.id}" class="w-5 h-5 text-gray-400 transform transition-transform duration-300 flex-shrink-0 ${isExpanded ? 'rotate-90' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                             <h3 class="font-bold text-gray-800 text-lg select-none">${item.judul}</h3>
                         </div>
                         <div class="flex space-x-1 ml-3 flex-shrink-0">
@@ -252,7 +265,7 @@
                         </div>
                     </div>
                     
-                    <div class="accordion-content ${isExpanded ? 'accordion-open' : ''}">
+                    <div id="content-${item.id}" class="accordion-content ${isExpanded ? 'accordion-open' : ''}">
                         <div class="pl-7 text-sm text-gray-600 mb-4 mt-2 whitespace-pre-wrap leading-relaxed">${safeHTMLDeskripsi}</div>
                     </div>
                     
