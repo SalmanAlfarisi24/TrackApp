@@ -67,7 +67,7 @@
             <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 class="text-2xl md:text-3xl font-bold tracking-tight">TrackApp</h1>
-                    <p class="text-indigo-200 text-sm md:text-base mt-1">Kelola Tugas & Lomba Anda</p>
+                    <p class="text-indigo-200 text-sm md:text-base mt-1">Kelola Tugas & Riwayat Anda</p>
                 </div>
                 <!-- Add Desktop -->
                 <button onclick="openModal()" class="hidden md:flex items-center gap-2 bg-white text-indigo-600 px-5 py-2.5 rounded-xl font-bold shadow hover:bg-indigo-50 active:scale-95 transition-all mt-4 md:mt-0">
@@ -82,8 +82,8 @@
             <button id="tab-tugas" onclick="switchTab('tugas')" class="flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors bg-indigo-100 text-indigo-700 shadow-sm border border-indigo-200 active:scale-95">
                 Tugas Kuliah
             </button>
-            <button id="tab-lomba" onclick="switchTab('lomba')" class="flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors text-gray-500 hover:bg-gray-100 border border-transparent active:scale-95">
-                Lomba
+            <button id="tab-riwayat" onclick="switchTab('riwayat')" class="flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors text-gray-500 hover:bg-gray-100 border border-transparent active:scale-95">
+                Riwayat
             </button>
         </div>
 
@@ -91,7 +91,7 @@
         <main class="flex-1 overflow-y-auto no-scrollbar p-4 md:px-8 md:py-6 relative pb-24 md:pb-8 w-full">
             <div class="max-w-5xl mx-auto h-full">
                 <div id="view-tugas" class="flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:items-start md:gap-6"></div>
-                <div id="view-lomba" class="hidden flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:items-start md:gap-6"></div>
+                <div id="view-riwayat" class="hidden flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:items-start md:gap-6"></div>
 
                 <!-- Empty -->
                 <div id="empty-state" class="hidden flex flex-col items-center justify-center h-full text-gray-400 mt-10 md:mt-20">
@@ -130,6 +130,10 @@
                             <label id="label-waktu" class="block text-sm font-medium text-gray-700 mb-1">Waktu</label>
                             <input type="datetime-local" id="input-waktu" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-gray-700 bg-white">
                         </div>
+                        <div class="flex items-center gap-2 mt-2" id="riwayat-checkbox-container">
+                            <input type="checkbox" id="input-simpan-riwayat" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                            <label for="input-simpan-riwayat" class="text-sm text-gray-700">Simpan ke Riwayat setelah deadline</label>
+                        </div>
                     </div>
                     
                     <div class="mt-8 flex space-x-3">
@@ -161,16 +165,20 @@
         /* Variables */
         let currentTab = 'tugas';
         let tasks = JSON.parse(localStorage.getItem('trackapp_tugas')) || [];
-        let competitions = JSON.parse(localStorage.getItem('trackapp_lomba')) || [];
+        let riwayat = JSON.parse(localStorage.getItem('trackapp_riwayat')) || JSON.parse(localStorage.getItem('trackapp_lomba')) || [];
+        if (localStorage.getItem('trackapp_lomba') && !localStorage.getItem('trackapp_riwayat')) {
+            localStorage.setItem('trackapp_riwayat', JSON.stringify(riwayat));
+            localStorage.removeItem('trackapp_lomba');
+        }
         let editingItemId = null;
         let itemToDeleteId = null;
         let expandedItemId = null;
 
         /* DOM */
         const tabTugasBtn = document.getElementById('tab-tugas');
-        const tabLombaBtn = document.getElementById('tab-lomba');
+        const tabRiwayatBtn = document.getElementById('tab-riwayat');
         const viewTugas = document.getElementById('view-tugas');
-        const viewLomba = document.getElementById('view-lomba');
+        const viewRiwayat = document.getElementById('view-riwayat');
         const emptyState = document.getElementById('empty-state');
         const modalOverlay = document.getElementById('modal-overlay');
         const modalContent = document.getElementById('modal-content');
@@ -179,6 +187,8 @@
         const inputWaktu = document.getElementById('input-waktu');
         const inputJudul = document.getElementById('input-judul');
         const inputDeskripsi = document.getElementById('input-deskripsi');
+        const riwayatCheckboxContainer = document.getElementById('riwayat-checkbox-container');
+        const inputSimpanRiwayat = document.getElementById('input-simpan-riwayat');
         const deleteModal = document.getElementById('delete-modal');
         const deleteModalContent = document.getElementById('delete-modal-content');
 
@@ -230,21 +240,21 @@
             expandedItemId = null; 
             
             viewTugas.classList.remove('tab-enter');
-            viewLomba.classList.remove('tab-enter');
+            viewRiwayat.classList.remove('tab-enter');
             void viewTugas.offsetWidth;
             
             if (tab === 'tugas') {
                 tabTugasBtn.className = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors bg-indigo-100 text-indigo-700 shadow-sm border border-indigo-200 active:scale-95";
-                tabLombaBtn.className = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors text-gray-500 hover:bg-gray-100 border border-transparent active:scale-95";
+                tabRiwayatBtn.className = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors text-gray-500 hover:bg-gray-100 border border-transparent active:scale-95";
                 viewTugas.classList.remove('hidden');
                 viewTugas.classList.add('flex', 'tab-enter');
-                viewLomba.classList.add('hidden');
-                viewLomba.classList.remove('flex');
+                viewRiwayat.classList.add('hidden');
+                viewRiwayat.classList.remove('flex');
             } else {
-                tabLombaBtn.className = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors bg-green-100 text-green-700 shadow-sm border border-green-200 active:scale-95";
+                tabRiwayatBtn.className = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors bg-green-100 text-green-700 shadow-sm border border-green-200 active:scale-95";
                 tabTugasBtn.className = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors text-gray-500 hover:bg-gray-100 border border-transparent active:scale-95";
-                viewLomba.classList.remove('hidden');
-                viewLomba.classList.add('flex', 'tab-enter');
+                viewRiwayat.classList.remove('hidden');
+                viewRiwayat.classList.add('flex', 'tab-enter');
                 viewTugas.classList.add('hidden');
                 viewTugas.classList.remove('flex');
             }
@@ -253,8 +263,8 @@
 
         /* List */
         function renderData() {
-            const listContainer = currentTab === 'tugas' ? viewTugas : viewLomba;
-            const dataArr = currentTab === 'tugas' ? tasks : competitions;
+            const listContainer = currentTab === 'tugas' ? viewTugas : viewRiwayat;
+            const dataArr = currentTab === 'tugas' ? tasks : riwayat;
             
             listContainer.innerHTML = '';
             
@@ -302,7 +312,7 @@
                     
                     <div class="flex items-center text-xs font-semibold ${timeColorClass} bg-gray-50 inline-flex px-3 py-1.5 rounded-lg border border-gray-100 mt-1">
                         <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        ${isTugas ? 'Deadline: ' : 'Dilaksanakan: '} ${timeFormatted}
+                        ${isTugas ? 'Deadline: ' : 'Selesai/Waktu: '} ${timeFormatted}
                     </div>
                 `;
                 listContainer.appendChild(card);
@@ -338,8 +348,8 @@
                     tasks = tasks.filter(t => t.id !== currentId);
                     localStorage.setItem('trackapp_tugas', JSON.stringify(tasks));
                 } else {
-                    competitions = competitions.filter(c => c.id !== currentId);
-                    localStorage.setItem('trackapp_lomba', JSON.stringify(competitions));
+                    riwayat = riwayat.filter(c => c.id !== currentId);
+                    localStorage.setItem('trackapp_riwayat', JSON.stringify(riwayat));
                 }
                 renderData();
             };
@@ -362,19 +372,31 @@
                 modalContent.classList.remove('scale-95');
             }, 10);
 
-            modalTitle.textContent = currentTab === 'tugas' ? "Tambah Tugas" : "Tambah Lomba";
-            labelWaktu.textContent = currentTab === 'tugas' ? "Waktu Deadline" : "Tanggal Pelaksanaan";
-            inputWaktu.type = currentTab === 'tugas' ? "datetime-local" : "date";
+            modalTitle.textContent = currentTab === 'tugas' ? "Tambah Tugas" : "Tambah Riwayat";
+            labelWaktu.textContent = currentTab === 'tugas' ? "Waktu Deadline" : "Waktu Selesai";
+            inputWaktu.type = "datetime-local";
+            
+            if (currentTab === 'tugas') {
+                riwayatCheckboxContainer.classList.remove('hidden');
+                riwayatCheckboxContainer.classList.add('flex');
+            } else {
+                riwayatCheckboxContainer.classList.add('hidden');
+                riwayatCheckboxContainer.classList.remove('flex');
+            }
         }
 
         window.openEditModal = function(id) {
             editingItemId = id;
-            const item = (currentTab === 'tugas' ? tasks : competitions).find(t => t.id === id);
+            const item = (currentTab === 'tugas' ? tasks : riwayat).find(t => t.id === id);
             if(!item) return;
 
             inputJudul.value = item.judul;
             inputDeskripsi.value = item.deskripsi;
             inputWaktu.value = item.waktu;
+            
+            if (currentTab === 'tugas') {
+                inputSimpanRiwayat.checked = item.simpanKeRiwayat || false;
+            }
 
             modalOverlay.classList.remove('hidden');
             setTimeout(() => {
@@ -382,9 +404,17 @@
                 modalContent.classList.remove('scale-95');
             }, 10);
 
-            modalTitle.textContent = currentTab === 'tugas' ? "Edit Tugas" : "Edit Lomba";
-            labelWaktu.textContent = currentTab === 'tugas' ? "Waktu Deadline" : "Tanggal Pelaksanaan";
-            inputWaktu.type = currentTab === 'tugas' ? "datetime-local" : "date";
+            modalTitle.textContent = currentTab === 'tugas' ? "Edit Tugas" : "Edit Riwayat";
+            labelWaktu.textContent = currentTab === 'tugas' ? "Waktu Deadline" : "Waktu Selesai";
+            inputWaktu.type = "datetime-local";
+            
+            if (currentTab === 'tugas') {
+                riwayatCheckboxContainer.classList.remove('hidden');
+                riwayatCheckboxContainer.classList.add('flex');
+            } else {
+                riwayatCheckboxContainer.classList.add('hidden');
+                riwayatCheckboxContainer.classList.remove('flex');
+            }
         }
 
         window.closeModal = function() {
@@ -402,21 +432,23 @@
             e.preventDefault();
             
             const doSave = () => {
-                const targetArray = currentTab === 'tugas' ? tasks : competitions;
+                const targetArray = currentTab === 'tugas' ? tasks : riwayat;
+                const simpanKeRiwayat = currentTab === 'tugas' ? inputSimpanRiwayat.checked : false;
+                
                 if (editingItemId) {
                     const itemIndex = targetArray.findIndex(t => t.id === editingItemId);
                     if (itemIndex > -1) {
-                        targetArray[itemIndex] = { ...targetArray[itemIndex], judul: inputJudul.value, deskripsi: inputDeskripsi.value, waktu: inputWaktu.value, notified: false };
+                        targetArray[itemIndex] = { ...targetArray[itemIndex], judul: inputJudul.value, deskripsi: inputDeskripsi.value, waktu: inputWaktu.value, simpanKeRiwayat, notified: false };
                     }
                 } else {
-                    targetArray.push({ id: Date.now().toString(), judul: inputJudul.value, deskripsi: inputDeskripsi.value, waktu: inputWaktu.value, notified: false });
+                    targetArray.push({ id: Date.now().toString(), judul: inputJudul.value, deskripsi: inputDeskripsi.value, waktu: inputWaktu.value, simpanKeRiwayat, notified: false });
                 }
 
                 if (currentTab === 'tugas') {
                     localStorage.setItem('trackapp_tugas', JSON.stringify(tasks));
                     checkDeadlines(); 
                 } else {
-                    localStorage.setItem('trackapp_lomba', JSON.stringify(competitions));
+                    localStorage.setItem('trackapp_riwayat', JSON.stringify(riwayat));
                 }
 
                 expandedItemId = editingItemId || targetArray[targetArray.length - 1].id;
@@ -444,25 +476,56 @@
             }
         }
 
-        /* Deadline */
+        /* Deadline & Auto-Archive */
         function checkDeadlines() {
+            const now = new Date().getTime();
+            let changedTugas = false;
+            let changedRiwayat = false;
+
+            // Proses auto hapus/pindah jika waktu habis
+            const remainingTasks = [];
+            tasks.forEach(task => {
+                const timeDiff = new Date(task.waktu).getTime() - now;
+                if (timeDiff < 0) {
+                    // Deadline habis
+                    if (task.simpanKeRiwayat) {
+                        riwayat.push(task);
+                        changedRiwayat = true;
+                    }
+                    changedTugas = true;
+                } else {
+                    remainingTasks.push(task);
+                }
+            });
+
+            if (changedTugas) {
+                tasks = remainingTasks;
+                localStorage.setItem('trackapp_tugas', JSON.stringify(tasks));
+                if (currentTab === 'tugas') renderData();
+            }
+            if (changedRiwayat) {
+                localStorage.setItem('trackapp_riwayat', JSON.stringify(riwayat));
+                if (currentTab === 'riwayat') renderData();
+            }
+
+            // Notifikasi
             if (!("Notification" in window) || Notification.permission !== "granted") return;
             
-            const now = new Date().getTime();
-            let needsSave = false;
-
+            let notifiedChanged = false;
             tasks.forEach(task => {
                 if (!task.notified) {
                     const timeDiff = new Date(task.waktu).getTime() - now;
                     if (timeDiff > 0 && timeDiff <= (24 * 60 * 60 * 1000)) {
                         triggerNotification("Pengingat Tugas! 📚", `Tugas "${task.judul}" deadline kurang dari 24 jam!`);
                         task.notified = true;
-                        needsSave = true;
+                        notifiedChanged = true;
                     }
                 }
             });
 
-            if (needsSave) localStorage.setItem('trackapp_tugas', JSON.stringify(tasks));
+            if (notifiedChanged) {
+                localStorage.setItem('trackapp_tugas', JSON.stringify(tasks));
+            }
         }
 
         /* Init */
