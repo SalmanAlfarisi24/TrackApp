@@ -1,7 +1,7 @@
 <div align="center">
   <img src="icon.png" alt="TrackApp Logo" width="120"/>
   <h1>TrackApp</h1>
-  <p><em>Progressive Web App (PWA) pribadi untuk mengelola Tugas Perkuliahan & Riwayat Anda.</em></p>
+  <p><em>Progressive Web App (PWA) pribadi untuk mengelola Tugas Anda.</em></p>
   
   <a href="https://salmanalfarisi24.github.io/TrackApp/">
     <img src="https://img.shields.io/badge/Akses-TrackApp-blue?style=for-the-badge&logo=appveyor" alt="Buka TrackApp" />
