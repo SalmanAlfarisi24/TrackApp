@@ -78,7 +78,13 @@
                     </div>
                     <!-- Mobile controls -->
                     <div class="flex md:hidden items-center gap-2">
-                        <button onclick="toggleLang()" class="p-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-sm font-bold w-10 text-center" id="btn-lang-mobile">EN</button>
+                        <button onclick="toggleLang()" class="relative w-14 h-7 bg-white/20 hover:bg-white/30 rounded-full transition-colors flex items-center p-1 focus:outline-none">
+                            <div id="lang-knob-mobile" class="w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 translate-x-0 z-10 absolute left-1"></div>
+                            <div class="w-full flex justify-between px-1.5 text-[10px] font-bold select-none text-white">
+                                <span>ID</span>
+                                <span>EN</span>
+                            </div>
+                        </button>
                         <button onclick="toggleTheme()" class="p-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors" id="btn-theme-mobile">
                             <svg id="icon-theme-mobile" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
                         </button>
@@ -86,7 +92,13 @@
                 </div>
                 <!-- Desktop controls -->
                 <div class="hidden md:flex items-center gap-3 mt-4 md:mt-0">
-                    <button onclick="toggleLang()" class="p-2.5 bg-white/20 hover:bg-white/30 rounded-xl transition-colors font-bold w-12 text-center" id="btn-lang-desktop">EN</button>
+                    <button onclick="toggleLang()" class="relative w-14 h-7 bg-white/20 hover:bg-white/30 rounded-full transition-colors flex items-center p-1 focus:outline-none">
+                        <div id="lang-knob-desktop" class="w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 translate-x-0 z-10 absolute left-1"></div>
+                        <div class="w-full flex justify-between px-1.5 text-[10px] font-bold select-none text-white">
+                            <span>ID</span>
+                            <span>EN</span>
+                        </div>
+                    </button>
                     <button onclick="toggleTheme()" class="p-2.5 bg-white/20 hover:bg-white/30 rounded-xl transition-colors" id="btn-theme-desktop">
                         <svg id="icon-theme-desktop" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
                     </button>
@@ -227,7 +239,7 @@
                 notifTitle: "✅ Notifikasi Aktif!",
                 notifBody: "TrackApp siap mengirim pengingat.",
                 notifTaskTitle: "Pengingat Tugas! 📚",
-                notifTaskBody: "Tugas \\"{judul}\\" deadline kurang dari 24 jam!"
+                notifTaskBody: "Tugas \"{judul}\" deadline kurang dari 24 jam!"
             },
             en: {
                 appSubtitle: "Manage your Tasks & History",
@@ -259,7 +271,7 @@
                 notifTitle: "✅ Notifications Active!",
                 notifBody: "TrackApp is ready to send reminders.",
                 notifTaskTitle: "Task Reminder! 📚",
-                notifTaskBody: "Task \\"{judul}\\" deadline is in less than 24 hours!"
+                notifTaskBody: "Task \"{judul}\" deadline is in less than 24 hours!"
             }
         };
         let currentLang = localStorage.getItem('trackapp_lang') || 'id';
@@ -307,9 +319,15 @@
         }
 
         function applyLanguage() {
-            const langBtnText = currentLang === 'id' ? 'EN' : 'ID';
-            document.getElementById('btn-lang-mobile').textContent = langBtnText;
-            document.getElementById('btn-lang-desktop').textContent = langBtnText;
+            const knobMobile = document.getElementById('lang-knob-mobile');
+            const knobDesktop = document.getElementById('lang-knob-desktop');
+            if (currentLang === 'en') {
+                if (knobMobile) { knobMobile.classList.remove('translate-x-0'); knobMobile.classList.add('translate-x-7'); }
+                if (knobDesktop) { knobDesktop.classList.remove('translate-x-0'); knobDesktop.classList.add('translate-x-7'); }
+            } else {
+                if (knobMobile) { knobMobile.classList.remove('translate-x-7'); knobMobile.classList.add('translate-x-0'); }
+                if (knobDesktop) { knobDesktop.classList.remove('translate-x-7'); knobDesktop.classList.add('translate-x-0'); }
+            }
             
             const t = i18n[currentLang];
             document.getElementById('text-app-subtitle').textContent = t.appSubtitle;
