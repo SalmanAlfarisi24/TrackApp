@@ -1,24 +1,45 @@
-# TrackApp
+<div align="center">
+  <img src="icon.png" alt="TrackApp Logo" width="120"/>
+  <h1>TrackApp</h1>
+  <p><em>Progressive Web App (PWA) pribadi untuk mengelola Tugas Perkuliahan & Riwayat Anda.</em></p>
+  
+  <a href="https://salmanalfarisi24.github.io/TrackApp/">
+    <img src="https://img.shields.io/badge/Akses-TrackApp-blue?style=for-the-badge&logo=appveyor" alt="Buka TrackApp" />
+  </a>
+</div>
 
-TrackApp adalah sebuah Progressive Web App (PWA) pribadi untuk mencatat dan mengelola Tugas Perkuliahan serta Riwayat Lomba. Aplikasi ini berjalan secara lokal di browser dan dapat diinstal langsung ke layar utama HP (Add to Home Screen) layaknya aplikasi native tanpa URL bar.
+<br>
 
-🛠️ Tech Stack
+TrackApp dirancang agar dapat berjalan secara lokal di browser Anda. Aplikasi ini mendukung **instalasi ke layar utama HP (Add to Home Screen)**, sehingga terasa seperti aplikasi *native* tanpa URL bar.
 
-HTML5
-Tailwind CSS
+---
 
-Vanilla JavaScript
+## 🛠️ Tech Stack
 
-Local Storage: Penyimpanan data secara lokal langsung di dalam memori browser.
+Aplikasi ini dibangun menggunakan teknologi web modern dan ringan:
+- **HTML5 & CSS3**
+- **Tailwind CSS** - Untuk *styling* dan desain responsif (Dilengkapi dengan *Dark/Light Mode*).
+- **Vanilla JavaScript** - Logika utama tanpa *framework*.
+- **Local Storage** - Penyimpanan data aman langsung di dalam perangkat/browser.
+- **PWA (Progressive Web App)** - Instalasi aplikasi & *service worker* mandiri.
 
-🚀 Cara Akses & Penggunaan
+---
 
-https://salmanalfarisi24.github.io/TrackApp/
+## 🚀 Cara Akses & Instalasi
 
-Buka tautan URL web TrackApp melalui browser di perangkat Anda (disarankan menggunakan Google Chrome atau Safari di HP).
+1. **Buka Tautan**
+   Akses [TrackApp](https://salmanalfarisi24.github.io/TrackApp/) melalui browser di perangkat Anda (Chrome atau Safari di HP sangat disarankan).
 
-Saat web terbuka, akan muncul banner "Install App", atau Anda bisa membuka menu browser (titik tiga) lalu memilih "Tambahkan ke Layar Utama" (Add to Home Screen).
+2. **Install Aplikasi**
+   Saat web terbuka, akan muncul *banner* **"Install App"**. Anda juga dapat membuka menu browser (titik tiga) lalu memilih opsi **"Tambahkan ke Layar Utama" (Add to Home Screen)**.
 
-Setelah berhasil ditambahkan, buka TrackApp melalui ikon di layar utama HP Anda. Aplikasi akan berjalan dalam mode fullscreen layaknya aplikasi biasa.
+3. **Gunakan Layaknya Aplikasi Biasa**
+   Setelah berhasil, buka TrackApp langsung melalui ikon di layar utama HP Anda. Aplikasi akan berjalan pada mode *fullscreen*.
 
-Catatan: Jangan lupa berikan izin notifikasi agar pengingat deadline tugas (H-1) dapat berfungsi.saat browser meminta persetujuan Notifikasi agar fitur pengingat deadline dapat bekerja dengan baik.
+> **⚠️ Catatan Penting:** 
+> Pastikan Anda memberikan **Izin Notifikasi** saat diminta oleh browser. Hal ini penting agar fitur *reminder* (pengingat deadline) H-1 dapat berfungsi dengan maksimal!
+
+---
+<div align="center">
+  <i>Dibuat dengan ❤️ untuk produktivitas Anda.</i>
+</div>
