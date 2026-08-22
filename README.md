@@ -36,9 +36,6 @@ Aplikasi ini dibangun menggunakan teknologi web modern dan ringan:
 3. **Gunakan Layaknya Aplikasi Biasa**
    Setelah berhasil, buka TrackApp langsung melalui ikon di layar utama HP Anda. Aplikasi akan berjalan pada mode *fullscreen*.
 
-> **⚠️ Catatan Penting:** 
-> Pastikan Anda memberikan **Izin Notifikasi** saat diminta oleh browser. Hal ini penting agar fitur *reminder* (pengingat deadline) H-1 dapat berfungsi dengan maksimal!
-
 ---
 <div align="center">
   <i>Dibuat dengan ❤️ untuk produktivitas Anda.</i>
