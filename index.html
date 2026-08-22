@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -9,19 +9,27 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#4f46e5">
+    <meta name="theme-color" content="#2563eb">
     
     <!-- Icons -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234f46e5'/><text x='50' y='65' font-family='sans-serif' font-size='50' font-weight='bold' fill='white' text-anchor='middle'>TA</text></svg>" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="https://placehold.co/192x192/4f46e5/ffffff?text=TA">
+    <link rel="icon" href="./icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="./icon.png">
     <link rel="manifest" id="dynamic-manifest">
     
     <!-- CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {}
+        }
+      }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        body { font-family: 'Inter', sans-serif; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
@@ -38,52 +46,65 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
-<body class="text-gray-800 antialiased overflow-hidden">
+<body class="text-gray-800 dark:text-gray-100 antialiased overflow-hidden bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
 
     <!-- Wrapper -->
-    <div class="w-full bg-gray-50 h-[100dvh] flex flex-col relative overflow-hidden">
+    <div class="w-full h-[100dvh] flex flex-col relative overflow-hidden">
         
         <!-- PWA Banner -->
-        <div id="install-banner" class="hidden absolute top-4 left-1/2 transform -translate-x-1/2 w-[90%] max-w-sm bg-white border border-gray-100 rounded-2xl shadow-2xl z-[60] p-4 flex items-center justify-between animate-[slideDown_0.4s_ease-out]">
+        <div id="install-banner" class="hidden absolute top-4 left-1/2 transform -translate-x-1/2 w-[90%] max-w-sm bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-2xl z-[60] p-4 flex items-center justify-between animate-[slideDown_0.4s_ease-out]">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <span class="text-white font-bold">TA</span>
-                </div>
+                <img src="./icon.png" alt="Logo" class="w-10 h-10 rounded-xl flex-shrink-0 object-cover">
                 <div class="flex flex-col">
-                    <span class="font-bold text-sm text-gray-800">Install TrackApp</span>
-                    <span class="text-xs text-gray-500">Tambahkan ke layar utama</span>
+                    <span class="font-bold text-sm text-gray-800 dark:text-gray-100" id="text-install-title">Install TrackApp</span>
+                    <span class="text-xs text-gray-500 dark:text-gray-400" id="text-install-sub">Tambahkan ke layar utama</span>
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <button id="install-btn" class="bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold shadow hover:bg-indigo-700 active:scale-95 transition-all">Install</button>
-                <button onclick="closeInstallBanner()" class="text-gray-400 hover:text-gray-600 p-1.5 rounded-full hover:bg-gray-100 transition-colors">
+                <button id="install-btn" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-semibold shadow hover:bg-blue-700 active:scale-95 transition-all"><span id="text-install-btn">Install</span></button>
+                <button onclick="closeInstallBanner()" class="text-gray-400 dark:text-gray-300 hover:text-gray-600 dark:hover:text-white p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
         </div>
 
         <!-- Header -->
-        <header class="bg-indigo-600 text-white pt-6 pb-4 md:pt-8 md:pb-6 px-6 md:px-8 shadow-md z-10 flex-shrink-0 w-full">
+        <header class="bg-blue-600 dark:bg-blue-800 text-white pt-6 pb-4 md:pt-8 md:pb-6 px-6 md:px-8 shadow-md z-10 flex-shrink-0 w-full transition-colors duration-300">
             <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between">
-                <div>
-                    <h1 class="text-2xl md:text-3xl font-bold tracking-tight">TrackApp</h1>
-                    <p class="text-indigo-200 text-sm md:text-base mt-1">Kelola Tugas & Riwayat Anda</p>
+                <div class="flex justify-between items-center w-full md:w-auto">
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold tracking-tight">TrackApp</h1>
+                        <p class="text-blue-200 dark:text-blue-300 text-sm md:text-base mt-1" id="text-app-subtitle">Kelola Tugas & Riwayat Anda</p>
+                    </div>
+                    <!-- Mobile controls -->
+                    <div class="flex md:hidden items-center gap-2">
+                        <button onclick="toggleLang()" class="p-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors text-sm font-bold w-10 text-center" id="btn-lang-mobile">EN</button>
+                        <button onclick="toggleTheme()" class="p-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors" id="btn-theme-mobile">
+                            <svg id="icon-theme-mobile" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
+                        </button>
+                    </div>
                 </div>
-                <!-- Add Desktop -->
-                <button onclick="openModal()" class="hidden md:flex items-center gap-2 bg-white text-indigo-600 px-5 py-2.5 rounded-xl font-bold shadow hover:bg-indigo-50 active:scale-95 transition-all mt-4 md:mt-0">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Tambah Data
-                </button>
+                <!-- Desktop controls -->
+                <div class="hidden md:flex items-center gap-3 mt-4 md:mt-0">
+                    <button onclick="toggleLang()" class="p-2.5 bg-white/20 hover:bg-white/30 rounded-xl transition-colors font-bold w-12 text-center" id="btn-lang-desktop">EN</button>
+                    <button onclick="toggleTheme()" class="p-2.5 bg-white/20 hover:bg-white/30 rounded-xl transition-colors" id="btn-theme-desktop">
+                        <svg id="icon-theme-desktop" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"></svg>
+                    </button>
+                    <button onclick="openModal()" class="flex items-center gap-2 bg-white dark:bg-gray-100 text-blue-600 dark:text-blue-800 px-5 py-2.5 rounded-xl font-bold shadow hover:bg-blue-50 dark:hover:bg-white active:scale-95 transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        <span id="text-add-desktop">Tambah Data</span>
+                    </button>
+                </div>
             </div>
         </header>
 
         <!-- Tabs -->
         <div class="max-w-5xl mx-auto w-full flex md:justify-center px-4 md:px-8 pt-4 md:pt-8 pb-2 space-x-2 md:space-x-4 flex-shrink-0">
-            <button id="tab-tugas" onclick="switchTab('tugas')" class="flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors bg-indigo-100 text-indigo-700 shadow-sm border border-indigo-200 active:scale-95">
-                Tugas Kuliah
+            <button id="tab-tugas" onclick="switchTab('tugas')" class="flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 shadow-sm border border-blue-200 dark:border-blue-800 active:scale-95">
+                <span id="text-tab-tugas">Tugas Kuliah</span>
             </button>
-            <button id="tab-riwayat" onclick="switchTab('riwayat')" class="flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors text-gray-500 hover:bg-gray-100 border border-transparent active:scale-95">
-                Riwayat
+            <button id="tab-riwayat" onclick="switchTab('riwayat')" class="flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 border border-transparent active:scale-95">
+                <span id="text-tab-riwayat">Riwayat</span>
             </button>
         </div>
 
@@ -94,24 +115,24 @@
                 <div id="view-riwayat" class="hidden flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-3 md:items-start md:gap-6"></div>
 
                 <!-- Empty -->
-                <div id="empty-state" class="hidden flex flex-col items-center justify-center h-full text-gray-400 mt-10 md:mt-20">
-                    <svg class="w-16 h-16 mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                    <p class="text-center font-medium">Belum ada data.<br>Tekan tombol + untuk menambah.</p>
+                <div id="empty-state" class="hidden flex flex-col items-center justify-center h-full text-gray-400 dark:text-gray-500 mt-10 md:mt-20">
+                    <svg class="w-16 h-16 mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                    <p class="text-center font-medium" id="text-empty">Belum ada data.<br>Tekan tombol + untuk menambah.</p>
                 </div>
             </div>
         </main>
 
         <!-- Add Mobile -->
-        <button onclick="openModal()" class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-indigo-600 rounded-full shadow-lg hover:shadow-xl text-white flex items-center justify-center hover:bg-indigo-700 active:scale-90 transition-all z-20">
+        <button onclick="openModal()" class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-blue-600 dark:bg-blue-700 rounded-full shadow-lg hover:shadow-xl text-white flex items-center justify-center hover:bg-blue-700 dark:hover:bg-blue-600 active:scale-90 transition-all z-20">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
         </button>
 
         <!-- Form Modal -->
-        <div id="modal-overlay" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center px-4 transition-opacity duration-300 opacity-0">
-            <div id="modal-content" class="bg-white rounded-2xl w-full max-w-sm shadow-2xl p-6 transition-all duration-300 transform scale-95">
+        <div id="modal-overlay" class="fixed inset-0 bg-gray-900/60 dark:bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center px-4 transition-opacity duration-300 opacity-0">
+            <div id="modal-content" class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-sm shadow-2xl p-6 transition-all duration-300 transform scale-95 border border-gray-100 dark:border-gray-700">
                 <div class="flex justify-between items-center mb-5">
-                    <h2 id="modal-title" class="text-xl font-bold text-gray-800">Tambah Data</h2>
-                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors">
+                    <h2 id="modal-title" class="text-xl font-bold text-gray-800 dark:text-gray-100">Tambah Data</h2>
+                    <button onclick="closeModal()" class="text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
@@ -119,42 +140,42 @@
                 <form id="add-form" onsubmit="saveData(event)">
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Judul</label>
-                            <input type="text" id="input-judul" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" placeholder="Masukkan judul...">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-judul">Judul</label>
+                            <input type="text" id="input-judul" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100" placeholder="Masukkan judul...">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
-                            <textarea id="input-deskripsi" rows="3" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all resize-none" placeholder="Tulis keterangan detail..."></textarea>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" id="label-deskripsi">Deskripsi</label>
+                            <textarea id="input-deskripsi" rows="3" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100" placeholder="Tulis keterangan detail..."></textarea>
                         </div>
                         <div>
-                            <label id="label-waktu" class="block text-sm font-medium text-gray-700 mb-1">Waktu</label>
-                            <input type="datetime-local" id="input-waktu" required class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-gray-700 bg-white">
+                            <label id="label-waktu" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Waktu</label>
+                            <input type="datetime-local" id="input-waktu" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-100 [color-scheme:light] dark:[color-scheme:dark]">
                         </div>
                         <div class="flex items-center gap-2 mt-2" id="riwayat-checkbox-container">
-                            <input type="checkbox" id="input-simpan-riwayat" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                            <label for="input-simpan-riwayat" class="text-sm text-gray-700">Simpan ke Riwayat setelah deadline</label>
+                            <input type="checkbox" id="input-simpan-riwayat" class="w-4 h-4 text-blue-600 dark:text-blue-500 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500 dark:focus:ring-blue-600">
+                            <label for="input-simpan-riwayat" class="text-sm text-gray-700 dark:text-gray-300" id="label-simpan-riwayat">Simpan ke Riwayat setelah deadline</label>
                         </div>
                     </div>
                     
                     <div class="mt-8 flex space-x-3">
-                        <button type="button" onclick="closeModal()" class="flex-1 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 active:scale-95 transition-all">Batal</button>
-                        <button type="submit" class="flex-1 py-2.5 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 active:scale-95 transition-all shadow-md shadow-indigo-200">Simpan</button>
+                        <button type="button" onclick="closeModal()" class="flex-1 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-95 transition-all" id="btn-batal">Batal</button>
+                        <button type="submit" class="flex-1 py-2.5 bg-blue-600 dark:bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 dark:hover:bg-blue-500 active:scale-95 transition-all shadow-md shadow-blue-200 dark:shadow-none" id="btn-simpan">Simpan</button>
                     </div>
                 </form>
             </div>
         </div>
 
         <!-- Delete Modal -->
-        <div id="delete-modal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center px-4 transition-opacity duration-300 opacity-0">
-            <div id="delete-modal-content" class="bg-white rounded-2xl w-full max-w-sm shadow-2xl p-6 transition-all duration-300 transform scale-95 text-center">
-                <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+        <div id="delete-modal" class="fixed inset-0 bg-gray-900/60 dark:bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center px-4 transition-opacity duration-300 opacity-0">
+            <div id="delete-modal-content" class="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-sm shadow-2xl p-6 transition-all duration-300 transform scale-95 text-center border border-gray-100 dark:border-gray-700">
+                <div class="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-red-600 dark:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                 </div>
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Hapus Data?</h2>
-                <p class="text-gray-500 text-sm mb-6">Tindakan ini tidak dapat dibatalkan.</p>
+                <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2" id="text-delete-title">Hapus Data?</h2>
+                <p class="text-gray-500 dark:text-gray-400 text-sm mb-6" id="text-delete-sub">Tindakan ini tidak dapat dibatalkan.</p>
                 <div class="flex space-x-3">
-                    <button onclick="closeDeleteModal()" class="flex-1 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 active:scale-95 transition-all">Batal</button>
-                    <button onclick="executeDelete()" class="flex-1 py-2.5 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 active:scale-95 transition-all shadow-md shadow-red-200">Hapus</button>
+                    <button onclick="closeDeleteModal()" class="flex-1 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-95 transition-all" id="btn-delete-batal">Batal</button>
+                    <button onclick="executeDelete()" class="flex-1 py-2.5 bg-red-600 dark:bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 dark:hover:bg-red-500 active:scale-95 transition-all shadow-md shadow-red-200 dark:shadow-none" id="btn-delete-hapus">Hapus</button>
                 </div>
             </div>
         </div>
@@ -174,7 +195,164 @@
         let itemToDeleteId = null;
         let expandedItemId = null;
 
-        /* DOM */
+        /* Dictionary */
+        const i18n = {
+            id: {
+                appSubtitle: "Kelola Tugas & Riwayat Anda",
+                tabTugas: "Tugas Kuliah",
+                tabRiwayat: "Riwayat",
+                emptyTitle: "Belum ada data.<br>Tekan tombol + untuk menambah.",
+                addDesktop: "Tambah Data",
+                installTitle: "Install TrackApp",
+                installSub: "Tambahkan ke layar utama",
+                installBtn: "Install",
+                modalAddTugas: "Tambah Tugas",
+                modalAddRiwayat: "Tambah Riwayat",
+                modalEditTugas: "Edit Tugas",
+                modalEditRiwayat: "Edit Riwayat",
+                labelJudul: "Judul",
+                labelDeskripsi: "Deskripsi",
+                labelWaktuTugas: "Waktu Deadline",
+                labelWaktuRiwayat: "Waktu Selesai",
+                placeholderJudul: "Masukkan judul...",
+                placeholderDeskripsi: "Tulis keterangan detail...",
+                simpanKeRiwayat: "Simpan ke Riwayat setelah deadline",
+                btnBatal: "Batal",
+                btnSimpan: "Simpan",
+                btnHapus: "Hapus",
+                deleteTitle: "Hapus Data?",
+                deleteSub: "Tindakan ini tidak dapat dibatalkan.",
+                deadline: "Deadline: ",
+                selesai: "Selesai/Waktu: ",
+                notifTitle: "✅ Notifikasi Aktif!",
+                notifBody: "TrackApp siap mengirim pengingat.",
+                notifTaskTitle: "Pengingat Tugas! 📚",
+                notifTaskBody: "Tugas \\"{judul}\\" deadline kurang dari 24 jam!"
+            },
+            en: {
+                appSubtitle: "Manage your Tasks & History",
+                tabTugas: "Assignments",
+                tabRiwayat: "History",
+                emptyTitle: "No data yet.<br>Press + button to add.",
+                addDesktop: "Add Data",
+                installTitle: "Install TrackApp",
+                installSub: "Add to home screen",
+                installBtn: "Install",
+                modalAddTugas: "Add Task",
+                modalAddRiwayat: "Add History",
+                modalEditTugas: "Edit Task",
+                modalEditRiwayat: "Edit History",
+                labelJudul: "Title",
+                labelDeskripsi: "Description",
+                labelWaktuTugas: "Deadline Time",
+                labelWaktuRiwayat: "Completion Time",
+                placeholderJudul: "Enter title...",
+                placeholderDeskripsi: "Write detailed description...",
+                simpanKeRiwayat: "Save to History after deadline",
+                btnBatal: "Cancel",
+                btnSimpan: "Save",
+                btnHapus: "Delete",
+                deleteTitle: "Delete Data?",
+                deleteSub: "This action cannot be undone.",
+                deadline: "Deadline: ",
+                selesai: "Completed/Time: ",
+                notifTitle: "✅ Notifications Active!",
+                notifBody: "TrackApp is ready to send reminders.",
+                notifTaskTitle: "Task Reminder! 📚",
+                notifTaskBody: "Task \\"{judul}\\" deadline is in less than 24 hours!"
+            }
+        };
+        let currentLang = localStorage.getItem('trackapp_lang') || 'id';
+
+        /* Theme & Dark Mode */
+        let isDarkMode = false;
+        function initTheme() {
+            const storedTheme = localStorage.getItem('trackapp_theme');
+            if (storedTheme) {
+                isDarkMode = storedTheme === 'dark';
+            } else {
+                isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            }
+            applyTheme();
+        }
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            localStorage.setItem('trackapp_theme', isDarkMode ? 'dark' : 'light');
+            applyTheme();
+        }
+
+        function applyTheme() {
+            if (isDarkMode) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            
+            const sunIcon = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>`;
+            const moonIcon = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>`;
+            
+            document.getElementById('icon-theme-mobile').innerHTML = isDarkMode ? sunIcon : moonIcon;
+            document.getElementById('icon-theme-desktop').innerHTML = isDarkMode ? sunIcon : moonIcon;
+            
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', isDarkMode ? '#1e40af' : '#2563eb');
+        }
+
+        /* Language */
+        function toggleLang() {
+            currentLang = currentLang === 'id' ? 'en' : 'id';
+            localStorage.setItem('trackapp_lang', currentLang);
+            applyLanguage();
+            renderData();
+        }
+
+        function applyLanguage() {
+            const langBtnText = currentLang === 'id' ? 'EN' : 'ID';
+            document.getElementById('btn-lang-mobile').textContent = langBtnText;
+            document.getElementById('btn-lang-desktop').textContent = langBtnText;
+            
+            const t = i18n[currentLang];
+            document.getElementById('text-app-subtitle').textContent = t.appSubtitle;
+            document.getElementById('text-tab-tugas').textContent = t.tabTugas;
+            document.getElementById('text-tab-riwayat').textContent = t.tabRiwayat;
+            document.getElementById('text-empty').innerHTML = t.emptyTitle;
+            document.getElementById('text-add-desktop').textContent = t.addDesktop;
+            
+            document.getElementById('text-install-title').textContent = t.installTitle;
+            document.getElementById('text-install-sub').textContent = t.installSub;
+            document.getElementById('text-install-btn').textContent = t.installBtn;
+            
+            document.getElementById('label-judul').textContent = t.labelJudul;
+            document.getElementById('label-deskripsi').textContent = t.labelDeskripsi;
+            document.getElementById('label-simpan-riwayat').textContent = t.simpanKeRiwayat;
+            
+            document.getElementById('input-judul').placeholder = t.placeholderJudul;
+            document.getElementById('input-deskripsi').placeholder = t.placeholderDeskripsi;
+            
+            document.getElementById('btn-batal').textContent = t.btnBatal;
+            document.getElementById('btn-simpan').textContent = t.btnSimpan;
+            
+            document.getElementById('text-delete-title').textContent = t.deleteTitle;
+            document.getElementById('text-delete-sub').textContent = t.deleteSub;
+            document.getElementById('btn-delete-batal').textContent = t.btnBatal;
+            document.getElementById('btn-delete-hapus').textContent = t.btnHapus;
+
+            if (!document.getElementById('modal-overlay').classList.contains('hidden')) {
+                updateModalLang();
+            }
+        }
+
+        function updateModalLang() {
+            const t = i18n[currentLang];
+            if (editingItemId) {
+                document.getElementById('modal-title').textContent = currentTab === 'tugas' ? t.modalEditTugas : t.modalEditRiwayat;
+            } else {
+                document.getElementById('modal-title').textContent = currentTab === 'tugas' ? t.modalAddTugas : t.modalAddRiwayat;
+            }
+            document.getElementById('label-waktu').textContent = currentTab === 'tugas' ? t.labelWaktuTugas : t.labelWaktuRiwayat;
+        }
+
+        /* DOM Variables */
         const tabTugasBtn = document.getElementById('tab-tugas');
         const tabRiwayatBtn = document.getElementById('tab-riwayat');
         const viewTugas = document.getElementById('view-tugas');
@@ -182,8 +360,6 @@
         const emptyState = document.getElementById('empty-state');
         const modalOverlay = document.getElementById('modal-overlay');
         const modalContent = document.getElementById('modal-content');
-        const modalTitle = document.getElementById('modal-title');
-        const labelWaktu = document.getElementById('label-waktu');
         const inputWaktu = document.getElementById('input-waktu');
         const inputJudul = document.getElementById('input-judul');
         const inputDeskripsi = document.getElementById('input-deskripsi');
@@ -194,12 +370,13 @@
 
         /* Format */
         function formatDate(dateString, isDatetime) {
+            const locale = currentLang === 'id' ? 'id-ID' : 'en-US';
             const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
             if (isDatetime) {
                 options.hour = '2-digit';
                 options.minute = '2-digit';
             }
-            return new Date(dateString).toLocaleDateString('id-ID', options);
+            return new Date(dateString).toLocaleDateString(locale, options);
         }
 
         function escapeHTML(str) {
@@ -208,7 +385,7 @@
 
         function linkify(text) {
             const urlRegex = /(https?:\/\/[^\s]+)/g;
-            return text.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-indigo-500 font-medium hover:underline hover:text-indigo-700" onclick="event.stopPropagation()">${url}</a>`);
+            return text.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-500 dark:text-blue-400 font-medium hover:underline hover:text-blue-700 dark:hover:text-blue-300" onclick="event.stopPropagation()">${url}</a>`);
         }
 
         /* Accordion */
@@ -243,16 +420,19 @@
             viewRiwayat.classList.remove('tab-enter');
             void viewTugas.offsetWidth;
             
+            const activeClass = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 shadow-sm border border-blue-200 dark:border-blue-800 active:scale-95";
+            const inactiveClass = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 border border-transparent active:scale-95";
+            
             if (tab === 'tugas') {
-                tabTugasBtn.className = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors bg-indigo-100 text-indigo-700 shadow-sm border border-indigo-200 active:scale-95";
-                tabRiwayatBtn.className = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors text-gray-500 hover:bg-gray-100 border border-transparent active:scale-95";
+                tabTugasBtn.className = activeClass;
+                tabRiwayatBtn.className = inactiveClass;
                 viewTugas.classList.remove('hidden');
                 viewTugas.classList.add('flex', 'tab-enter');
                 viewRiwayat.classList.add('hidden');
                 viewRiwayat.classList.remove('flex');
             } else {
-                tabRiwayatBtn.className = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors bg-green-100 text-green-700 shadow-sm border border-green-200 active:scale-95";
-                tabTugasBtn.className = "flex-1 md:flex-none md:w-56 py-2 md:py-3 px-4 rounded-full md:rounded-xl font-semibold text-sm md:text-base transition-colors text-gray-500 hover:bg-gray-100 border border-transparent active:scale-95";
+                tabRiwayatBtn.className = activeClass;
+                tabTugasBtn.className = inactiveClass;
                 viewRiwayat.classList.remove('hidden');
                 viewRiwayat.classList.add('flex', 'tab-enter');
                 viewTugas.classList.add('hidden');
@@ -265,6 +445,7 @@
         function renderData() {
             const listContainer = currentTab === 'tugas' ? viewTugas : viewRiwayat;
             const dataArr = currentTab === 'tugas' ? tasks : riwayat;
+            const t = i18n[currentLang];
             
             listContainer.innerHTML = '';
             
@@ -278,27 +459,29 @@
 
             sortedData.forEach((item, index) => {
                 const isTugas = currentTab === 'tugas';
-                const timeColorClass = isTugas ? 'text-red-500' : 'text-green-600';
+                const timeColorClass = isTugas ? 'text-red-500 dark:text-red-400' : 'text-green-600 dark:text-green-400';
                 const timeFormatted = formatDate(item.waktu, isTugas);
                 const isExpanded = expandedItemId === item.id;
                 const safeHTMLDeskripsi = linkify(escapeHTML(item.deskripsi));
 
                 const card = document.createElement('div');
                 card.id = `card-${item.id}`;
-                card.className = "bg-white border border-gray-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow relative item-enter w-full";
+                card.className = "bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow relative item-enter w-full";
                 card.style.animationDelay = `${index * 30}ms`;
+                
+                const timePrefix = isTugas ? t.deadline : t.selesai;
                 
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-2">
                         <div class="flex items-center gap-2 cursor-pointer flex-1" onclick="toggleDescription('${item.id}')">
-                            <svg id="arrow-${item.id}" class="w-5 h-5 text-gray-400 transform transition-transform duration-300 flex-shrink-0 ${isExpanded ? 'rotate-90' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                            <h3 class="font-bold text-gray-800 text-lg select-none break-all">${item.judul}</h3>
+                            <svg id="arrow-${item.id}" class="w-5 h-5 text-gray-400 dark:text-gray-500 transform transition-transform duration-300 flex-shrink-0 ${isExpanded ? 'rotate-90' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <h3 class="font-bold text-gray-800 dark:text-gray-100 text-lg select-none break-all">${item.judul}</h3>
                         </div>
                         <div class="flex space-x-1 ml-3 flex-shrink-0">
-                            <button onclick="openEditModal('${item.id}')" class="text-gray-400 hover:text-indigo-500 p-1.5 transition-all rounded-full hover:bg-indigo-50 active:scale-75">
+                            <button onclick="openEditModal('${item.id}')" class="text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 p-1.5 transition-all rounded-full hover:bg-blue-50 dark:hover:bg-blue-900/30 active:scale-75">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                             </button>
-                            <button onclick="promptDelete('${item.id}')" class="text-gray-400 hover:text-red-500 p-1.5 transition-all rounded-full hover:bg-red-50 active:scale-75">
+                            <button onclick="promptDelete('${item.id}')" class="text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 p-1.5 transition-all rounded-full hover:bg-red-50 dark:hover:bg-red-900/30 active:scale-75">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                             </button>
                         </div>
@@ -306,13 +489,13 @@
                     
                     <div id="content-${item.id}" class="accordion-content ${isExpanded ? 'accordion-open' : ''}">
                         <div class="accordion-inner">
-                            <div class="pl-7 text-sm text-gray-600 mb-4 mt-2 whitespace-pre-wrap leading-relaxed break-words">${safeHTMLDeskripsi}</div>
+                            <div class="pl-7 text-sm text-gray-600 dark:text-gray-400 mb-4 mt-2 whitespace-pre-wrap leading-relaxed break-words">${safeHTMLDeskripsi}</div>
                         </div>
                     </div>
                     
-                    <div class="flex items-center text-xs font-semibold ${timeColorClass} bg-gray-50 inline-flex px-3 py-1.5 rounded-lg border border-gray-100 mt-1">
+                    <div class="flex items-center text-xs font-semibold ${timeColorClass} bg-gray-50 dark:bg-gray-700/50 inline-flex px-3 py-1.5 rounded-lg border border-gray-100 dark:border-gray-700 mt-1">
                         <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        ${isTugas ? 'Deadline: ' : 'Selesai/Waktu: '} ${timeFormatted}
+                        ${timePrefix} ${timeFormatted}
                     </div>
                 `;
                 listContainer.appendChild(card);
@@ -322,18 +505,18 @@
         /* Delete Dialog */
         window.promptDelete = function(id) {
             itemToDeleteId = id;
-            deleteModal.classList.remove('hidden');
+            document.getElementById('delete-modal').classList.remove('hidden');
             setTimeout(() => {
-                deleteModal.classList.remove('opacity-0');
-                deleteModalContent.classList.remove('scale-95');
+                document.getElementById('delete-modal').classList.remove('opacity-0');
+                document.getElementById('delete-modal-content').classList.remove('scale-95');
             }, 10);
         }
 
         /* Execute Delete */
         window.closeDeleteModal = function() {
-            deleteModal.classList.add('opacity-0');
-            deleteModalContent.classList.add('scale-95');
-            setTimeout(() => { deleteModal.classList.add('hidden'); itemToDeleteId = null; }, 300);
+            document.getElementById('delete-modal').classList.add('opacity-0');
+            document.getElementById('delete-modal-content').classList.add('scale-95');
+            setTimeout(() => { document.getElementById('delete-modal').classList.add('hidden'); itemToDeleteId = null; }, 300);
         }
 
         window.executeDelete = function() {
@@ -372,8 +555,7 @@
                 modalContent.classList.remove('scale-95');
             }, 10);
 
-            modalTitle.textContent = currentTab === 'tugas' ? "Tambah Tugas" : "Tambah Riwayat";
-            labelWaktu.textContent = currentTab === 'tugas' ? "Waktu Deadline" : "Waktu Selesai";
+            updateModalLang();
             inputWaktu.type = "datetime-local";
             
             if (currentTab === 'tugas') {
@@ -404,8 +586,7 @@
                 modalContent.classList.remove('scale-95');
             }, 10);
 
-            modalTitle.textContent = currentTab === 'tugas' ? "Edit Tugas" : "Edit Riwayat";
-            labelWaktu.textContent = currentTab === 'tugas' ? "Waktu Deadline" : "Waktu Selesai";
+            updateModalLang();
             inputWaktu.type = "datetime-local";
             
             if (currentTab === 'tugas') {
@@ -458,7 +639,8 @@
 
             if ("Notification" in window && Notification.permission === "default") {
                 Notification.requestPermission().then(permission => {
-                    if (permission === "granted") triggerNotification("✅ Notifikasi Aktif!", "TrackApp siap mengirim pengingat.");
+                    const t = i18n[currentLang];
+                    if (permission === "granted") triggerNotification(t.notifTitle, t.notifBody);
                     doSave();
                 });
             } else {
@@ -468,7 +650,7 @@
 
         /* Notify */
         function triggerNotification(title, body) {
-            const options = { body: body, icon: "https://placehold.co/192x192/4f46e5/ffffff?text=TA", vibrate: [200, 100, 200] };
+            const options = { body: body, icon: "./icon.png", vibrate: [200, 100, 200] };
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options)).catch(() => new Notification(title, options));
             } else {
@@ -481,6 +663,7 @@
             const now = new Date().getTime();
             let changedTugas = false;
             let changedRiwayat = false;
+            const t = i18n[currentLang];
 
             // Proses auto hapus/pindah jika waktu habis
             const remainingTasks = [];
@@ -516,7 +699,9 @@
                 if (!task.notified) {
                     const timeDiff = new Date(task.waktu).getTime() - now;
                     if (timeDiff > 0 && timeDiff <= (24 * 60 * 60 * 1000)) {
-                        triggerNotification("Pengingat Tugas! 📚", `Tugas "${task.judul}" deadline kurang dari 24 jam!`);
+                        const title = t.notifTaskTitle;
+                        const body = t.notifTaskBody.replace('{judul}', task.judul);
+                        triggerNotification(title, body);
                         task.notified = true;
                         notifiedChanged = true;
                     }
@@ -529,6 +714,8 @@
         }
 
         /* Init */
+        initTheme();
+        applyLanguage();
         renderData();
         checkDeadlines();
         setInterval(checkDeadlines, 60000);
@@ -539,9 +726,9 @@
             "short_name": "TrackApp",
             "start_url": ".",
             "display": "standalone",
-            "background_color": "#ffffff",
-            "theme_color": "#4f46e5",
-            "icons": [{ "src": "https://placehold.co/512x512/4f46e5/ffffff?text=TA", "sizes": "512x512", "type": "image/png" }]
+            "background_color": isDarkMode ? "#111827" : "#ffffff",
+            "theme_color": "#2563eb",
+            "icons": [{ "src": "./icon.png", "sizes": "512x512", "type": "image/png" }]
         };
         document.getElementById('dynamic-manifest').setAttribute('href', 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(appManifest)));
 

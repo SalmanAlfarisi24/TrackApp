@@ -4,15 +4,12 @@ TrackApp adalah sebuah Progressive Web App (PWA) pribadi untuk mencatat dan meng
 
 🛠️ Tech Stack
 
-HTML5: Struktur halaman web tunggal (Single Page).
+HTML5
+Tailwind CSS
 
-Tailwind CSS: Styling dan desain UI modern yang responsif (via CDN).
-
-Vanilla JavaScript: Logika aplikasi, state management, dan manipulasi DOM.
+Vanilla JavaScript
 
 Local Storage: Penyimpanan data secara lokal langsung di dalam memori browser.
-
-PWA (Service Worker & Web Manifest): Mengaktifkan fitur instalasi ke layar utama dan notifikasi browser.
 
 🚀 Cara Akses & Penggunaan
 
